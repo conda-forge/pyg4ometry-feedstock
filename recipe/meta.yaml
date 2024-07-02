@@ -17,7 +17,7 @@ source:
     sha256: 6852386d7975eff29171dae002cc223251510d35f291ae277948f381a7b380b4
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win or py<38]
   script:
     - cd pyg4ometry
@@ -36,6 +36,7 @@ requirements:
     - cython                                 # [build_platform != target_platform]
     - pybind11                               # [build_platform != target_platform]
     - {{ compiler('c') }}
+    - {{ stdlib("c") }}
     - {{ compiler('cxx') }}
     - make
     - sed
