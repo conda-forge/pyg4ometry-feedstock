@@ -26,6 +26,7 @@ requirements:
     - {{ compiler('cxx') }}
     - {{ stdlib('c') }}
     - cgal
+    - occt
     - pybind11 >=2.6
     - setuptools >=42
     - setuptools-scm >=3.4
