@@ -20,6 +20,7 @@ requirements:
   host:
     - python >=3.6.8
     - cython
+    - cmake >=3.20
     - pybind11 >=2.6
     - setuptools >=42
     - setuptools-scm >=3.4
