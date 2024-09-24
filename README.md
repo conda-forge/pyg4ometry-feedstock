@@ -1,7 +1,7 @@
 About pyg4ometry
 ================
 
-Home: https://bitbucket.org/jairhul/pyg4ometry/
+Home: https://github.com/g4edge/pyg4ometry
 
 Package license: GPL-3.0-only
 
@@ -9,9 +9,9 @@ Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/pyg4ometry-feed
 
 Summary: Python code for rapid creation and conversion of radiation transport Monte Carlo (Geant4 and Fluka) geometries
 
-Development: https://bitbucket.org/jairhul/pyg4ometry/
+Development: https://github.com/g4edge/pyg4ometry
 
-Documentation: http://www.pp.rhul.ac.uk/bdsim/pyg4ometry/
+Documentation: https://pyg4ometry.readthedocs.io
 
 Current build status
 ====================
