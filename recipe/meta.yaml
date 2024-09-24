@@ -22,6 +22,9 @@ requirements:
     - cython
     - cmake >=3.20
     - make
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ stdlib('c') }}
     - pybind11 >=2.6
     - setuptools >=42
     - setuptools-scm >=3.4
