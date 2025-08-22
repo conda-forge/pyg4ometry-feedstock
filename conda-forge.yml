@@ -9,7 +9,6 @@ github:
 provider:
   linux_64: default
   osx_64: default
-  osx_arm64: default
 conda_build:
   pkg_format: '2'
 test: native_and_emulated
