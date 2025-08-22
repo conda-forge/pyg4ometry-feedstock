@@ -1,5 +1,5 @@
 {% set name = "pyg4ometry" %}
-{% set version = "1.2.4" %}
+{% set version = "1.3.5" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/pyg4ometry-{{ version }}.tar.gz
-  sha256: 35f7988ae5a08eff7a6e02de6fc2b742553d8002e91d6f3b090d421c807557ee
+  sha256: dde0877bc1c214cedaec7b8015d201d215977f2c5c86e307de6f5451219034b0
 
 build:
   skip: true  # [win or py<38]
