@@ -74,6 +74,7 @@ test:
     - pyg4ometry --help
   requires:
     - pip
+    - setuptools
 
 about:
   home: https://github.com/g4edge/pyg4ometry
