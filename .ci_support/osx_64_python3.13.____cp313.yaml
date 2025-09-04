@@ -18,8 +18,12 @@ cxx_compiler:
 - clangxx
 cxx_compiler_version:
 - '19'
+gmp:
+- '6'
 macos_machine:
 - x86_64-apple-darwin13.4.0
+mpfr:
+- '4'
 numpy:
 - '2'
 occt:
