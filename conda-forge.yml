@@ -1,14 +1,17 @@
 build_platform:
-    linux_64: linux_64
-    osx_64: osx_64
-    osx_arm64: osx_64
+  linux_64: linux_64
+  linux_aarch64: linux_64
+  linux_ppc64le: linux_64
+  osx_64: osx_64
+  osx_arm64: osx_64
+
 conda_forge_output_validation: true
+
+conda_build:
+  pkg_format: '2'
+
+test: native_and_emulated
+
 github:
   branch_name: main
   tooling_branch_name: main
-provider:
-  linux_64: default
-  osx_64: default
-conda_build:
-  pkg_format: '2'
-test: native_and_emulated
