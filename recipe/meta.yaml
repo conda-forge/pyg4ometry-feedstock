@@ -10,7 +10,8 @@ source:
   sha256: dde0877bc1c214cedaec7b8015d201d215977f2c5c86e307de6f5451219034b0
 
 build:
-  skip: true  # [win or py<38]
+  # NOTE: no vtk builds available for 3.13 on aarch64
+  skip: true  # [py<38 or win or (py>=313 and aarch64)]
   entry_points:
     - pyg4ometry = pyg4ometry.cli:main
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
