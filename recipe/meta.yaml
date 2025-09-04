@@ -40,6 +40,8 @@ requirements:
     - python-build
     - cgal
     - occt
+    - mpfr
+    - gmp
     - {{ stdlib('c') }}
     - {{ cdt('mesa-libgl-devel') }}  # [linux]
     - {{ cdt('mesa-dri-drivers') }}  # [linux]
@@ -60,6 +62,8 @@ requirements:
     - vtk
     - cgal
     - occt
+    - mpfr
+    - gmp
     - {{ stdlib('c') }}
     - {{ cdt('mesa-libgl-devel') }}  # [linux]
     - {{ cdt('mesa-dri-drivers') }}  # [linux]
