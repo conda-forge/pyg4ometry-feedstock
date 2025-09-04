@@ -17,55 +17,57 @@ build:
   number: 0
 
 requirements:
-  host:
-    - python
-    - cython
-    - cmake >=3.20
-    - make
+  build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ stdlib('c') }}
-    - cgal
-    - occt
+    - cmake >=3.20
+    - make
+    - python                              # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}  # [build_platform != target_platform]
+    - {{ pin_compatible('numpy') }}       # [build_platform != target_platform]
+    - pybind11                            # [build_platform != target_platform]
+  host:
+    - python
+    - pip
+    - cython
     - pybind11 >=2.6
+    - {{ pin_compatible('numpy') }}
     - setuptools >=42
     - setuptools-scm >=3.4
     - scikit-build-core ==0.5
     - antlr4-tools ==0.2.1
     - python-build
-    - pip
-    - matplotlib-base
-    - {{ cdt('mesa-libgl-devel') }}  # [linux]
-    - {{ cdt('mesa-dri-drivers') }}  # [linux]
-    - {{ cdt('libselinux') }}  # [linux]
-    - {{ cdt('libxdamage') }}  # [linux]
-    - {{ cdt('libxxf86vm') }}  # [linux]
-    - {{ cdt('libxext') }}     # [linux]
-
-  run:
-    - python 
-    - importlib-resources
-    - antlr4-python3-runtime ==4.13.1
-    - configparser
-    - matplotlib-base
-    - networkx
-    - numpy
-    - pandas
-    - scipy
-    - sympy 
-    - testtools
+    - cgal
     - occt
-    - vtk
-    - gmp
-    - mpfr
     - {{ stdlib('c') }}
     - {{ cdt('mesa-libgl-devel') }}  # [linux]
     - {{ cdt('mesa-dri-drivers') }}  # [linux]
-    - {{ cdt('libselinux') }}  # [linux]
-    - {{ cdt('libxdamage') }}  # [linux]
-    - {{ cdt('libxxf86vm') }}  # [linux]
-    - {{ cdt('libxext') }}     # [linux]
-    
+    - {{ cdt('libselinux') }}        # [linux]
+    - {{ cdt('libxdamage') }}        # [linux]
+    - {{ cdt('libxxf86vm') }}        # [linux]
+    - {{ cdt('libxext') }}           # [linux]
+  run:
+    - python
+    - importlib-resources
+    - antlr4-python3-runtime ==4.13.1
+    - matplotlib-base
+    - networkx >=3
+    - {{ pin_compatible('numpy') }}
+    - pandas
+    - scipy
+    - sympy >=1.7
+    - vtk
+    - cgal
+    - occt
+    - {{ stdlib('c') }}
+    - {{ cdt('mesa-libgl-devel') }}  # [linux]
+    - {{ cdt('mesa-dri-drivers') }}  # [linux]
+    - {{ cdt('libselinux') }}        # [linux]
+    - {{ cdt('libxdamage') }}        # [linux]
+    - {{ cdt('libxxf86vm') }}        # [linux]
+    - {{ cdt('libxext') }}           # [linux]
+
 test:
   imports:
     - pyg4ometry
