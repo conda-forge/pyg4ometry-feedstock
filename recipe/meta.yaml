@@ -42,13 +42,7 @@ requirements:
     - occt
     - mpfr
     - gmp
-    - {{ stdlib('c') }}
-    - {{ cdt('mesa-libgl-devel') }}  # [linux]
-    - {{ cdt('mesa-dri-drivers') }}  # [linux]
-    - {{ cdt('libselinux') }}        # [linux]
-    - {{ cdt('libxdamage') }}        # [linux]
-    - {{ cdt('libxxf86vm') }}        # [linux]
-    - {{ cdt('libxext') }}           # [linux]
+    - libgl-devel  # [linux]
   run:
     - python
     - importlib-resources
@@ -64,13 +58,9 @@ requirements:
     - occt
     - mpfr
     - gmp
-    - {{ stdlib('c') }}
-    - {{ cdt('mesa-libgl-devel') }}  # [linux]
-    - {{ cdt('mesa-dri-drivers') }}  # [linux]
-    - {{ cdt('libselinux') }}        # [linux]
-    - {{ cdt('libxdamage') }}        # [linux]
-    - {{ cdt('libxxf86vm') }}        # [linux]
-    - {{ cdt('libxext') }}           # [linux]
+    - configparser
+    - testtools
+    - libgl-devel  # [linux]
 
 test:
   imports:
