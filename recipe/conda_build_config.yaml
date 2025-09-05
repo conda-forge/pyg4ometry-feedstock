@@ -1,0 +1,3 @@
+# issues with TLS allocation order, c.f. https://github.com/conda-forge/conda-forge.github.io/issues/1551
+c_stdlib_version:  # [aarch64]
+  - 2.34           # [aarch64]
