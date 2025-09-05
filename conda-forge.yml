@@ -1,10 +1,6 @@
 build_platform:
-  linux_64: linux_64
-  # NOTE: testing on aarch64 and ppc64le fails with:
-  #   ImportError: /home/conda/[...]/site-packages/vtkmodules/../../.././././libGLdispatch.so.0: cannot allocate memory in static TLS block
-  # linux_aarch64: linux_64
-  # linux_ppc64le: linux_64
-  osx_64: osx_64
+  linux_aarch64: linux_64
+  linux_ppc64le: linux_64
   osx_arm64: osx_64
 
 conda_forge_output_validation: true
