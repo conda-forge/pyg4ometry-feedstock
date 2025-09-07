@@ -1,5 +1,5 @@
 {% set name = "pyg4ometry" %}
-{% set version = "1.3.5" %}
+{% set version = "1.4.2" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/pyg4ometry-{{ version }}.tar.gz
-  sha256: dde0877bc1c214cedaec7b8015d201d215977f2c5c86e307de6f5451219034b0
+  sha256: 9c64cea54feeb73c9a7812eeafc2932cbe628307aef27a927fce67e45b7ca79d
 
 build:
   # no recent qt builds for ppc
