@@ -1,88 +1,87 @@
 {% set name = "pyg4ometry" %}
-{% set version = "1.0.2" %}
-{% set antlr_version = "4.7.2" %}
+{% set version = "1.3.5" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  - url: https://bitbucket.org/jairhul/pyg4ometry/get/v{{ version }}.tar.gz
-    sha256: 6e2c1224baedbdc681c053b8d281616035ea2118a141018b63a680f924a443d5
-    folder: pyg4ometry
-    patches:
-      - 0001-Fix-setting-includeSearchDirs-and-librarySearchDirs.patch
-      - 0002-Remove-test-only-dependencies.patch
-  - url: https://www.antlr.org/download/antlr-{{ antlr_version }}-complete.jar
-    sha256: 6852386d7975eff29171dae002cc223251510d35f291ae277948f381a7b380b4
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/pyg4ometry-{{ version }}.tar.gz
+  sha256: dde0877bc1c214cedaec7b8015d201d215977f2c5c86e307de6f5451219034b0
 
 build:
+  # no recent qt builds for ppc
+  skip: true  # [ppc64le and py==313]
+  entry_points:
+    - pyg4ometry = pyg4ometry.cli:main
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
-  skip: true  # [win or py<38]
-  script:
-    - cd pyg4ometry
-    # Regenerate the antlr parsers so they can be used with a newer version of the runtime
-    - find pyg4ometry/ -name '*.g4' -print -exec java -jar "$SRC_DIR/antlr-{{ antlr_version }}-complete.jar" {} -Dlanguage=Python3 -visitor \;
-    # Update the antlr-python-runtime dependency pin for setuptools
-    - sed -E -i.bak 's@"antlr4-python3-runtime==.+"@"antlr4-python3-runtime=={{ antlr_version }}"@g' setup.py
-    - grep antlr4-python3-runtime=={{ antlr_version }} setup.py
-    # Build and install pyg4ometry itself
-    - {{ PYTHON }} -m pip install . -vv
 
 requirements:
   build:
-    - python                                 # [build_platform != target_platform]
-    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-    - cython                                 # [build_platform != target_platform]
-    - pybind11                               # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - {{ stdlib('c') }}
+    - cmake >=3.20
     - make
-    - sed
-    - openjdk
+    - python                              # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}  # [build_platform != target_platform]
+    - numpy                               # [build_platform != target_platform]
+    - pybind11                            # [build_platform != target_platform]
   host:
     - python
     - pip
-    - cgal
-    - vtk
-    - pybind11
     - cython
+    - pybind11 >=2.6
+    - {{ pin_compatible('numpy') }}
+    - setuptools >=42
+    - setuptools-scm >=3.4
+    - scikit-build-core ==0.5
+    - antlr4-tools ==0.2.1
+    - python-build
+    - cgal
+    - occt
     - mpfr
     - gmp
+    - libgl-devel  # [linux]
   run:
     - python
-    - antlr-python-runtime ={{ antlr_version }}
+    - importlib-resources
+    - antlr4-python3-runtime ==4.13.1
     - matplotlib-base
+    - networkx >=3
     - pandas
-    - networkx
-    - numpy
-    - vtk
-    - configparser
-    - sympy >=1.7
     - scipy
+    - sympy >=1.7
+    - vtk
+    - cgal
+    - occt
+    - mpfr
+    - gmp
+    - configparser
+    - testtools
 
 test:
   imports:
     - pyg4ometry
-    - pyg4ometry.convert
-    - pyg4ometry.fluka
-    - pyg4ometry.geant4
-    - pyg4ometry.visualisation
-  requires:
-    - pip
   commands:
     - pip check
+    - pyg4ometry --help
+  requires:
+    - pip
+    - setuptools
 
 about:
-  home: https://bitbucket.org/jairhul/pyg4ometry/
+  home: https://github.com/g4edge/pyg4ometry
   license: GPL-3.0-only
   license_file:
-    - pyg4ometry/LICENCE.txt
-    - pyg4ometry/COPYING.txt
+    - LICENSE
   summary: Python code for rapid creation and conversion of radiation transport Monte Carlo (Geant4 and Fluka) geometries
-  doc_url: http://www.pp.rhul.ac.uk/bdsim/pyg4ometry/
-  dev_url: https://bitbucket.org/jairhul/pyg4ometry/
+  doc_url: https://pyg4ometry.readthedocs.io
+  dev_url: https://github.com/g4edge/pyg4ometry
 
 extra:
   recipe-maintainers:
     - chrisburr
+    - stewartboogert
+    - gipert
