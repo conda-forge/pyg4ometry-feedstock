@@ -1,5 +1,5 @@
 {% set name = "pyg4ometry" %}
-{% set version = "1.4.2" %}
+{% set version = "1.4.3" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/pyg4ometry-{{ version }}.tar.gz
-  sha256: 9c64cea54feeb73c9a7812eeafc2932cbe628307aef27a927fce67e45b7ca79d
+  sha256: b311927c5dcde7dc05ec112504eeea2f807c4c2269aff9297b5aa37ec98bd14e
 
 build:
   # no recent qt builds for ppc
@@ -15,7 +15,7 @@ build:
   entry_points:
     - pyg4ometry = pyg4ometry.cli:main
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  number: 3
+  number: 0
 
 requirements:
   build:
@@ -45,6 +45,7 @@ requirements:
     - gmp
     - libgl-devel  # [linux]
   run:
+    - numpy
     - python
     - importlib-resources
     - antlr4-python3-runtime ==4.13.1
