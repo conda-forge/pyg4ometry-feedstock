@@ -16,6 +16,8 @@ build:
     - pyg4ometry = pyg4ometry.cli:main
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
+  script_env:
+    - CXXFLAGS=/std:c++17  # [win]
 
 requirements:
   build:
