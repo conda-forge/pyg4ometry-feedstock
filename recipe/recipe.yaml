@@ -1,0 +1,127 @@
+schema_version: 1
+
+context:
+  version: "1.4.6"
+
+package:
+  name: pyg4ometry
+  version: ${{ version }}
+
+source:
+  url: https://files.pythonhosted.org/packages/source/p/pyg4ometry/pyg4ometry-${{ version }}.tar.gz
+  sha256: 37cd80eda2c3bea3b8dacab324d8215ef9098c1c51d8bffd0a2d1a26d077341e
+
+build:
+  number: 2
+  script:
+    - if: unix
+      then: export CMAKE_BUILD_PARALLEL_LEVEL=${CPU_COUNT}
+    - if: win
+      then:
+        - set CXXFLAGS=/std:c++17
+        - set CMAKE_BUILD_PARALLEL_LEVEL=%CPU_COUNT%
+    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  python:
+    entry_points:
+      # Not left to pip: its Windows launcher bakes in the build-time prefix
+      # and breaks on relocation.
+      - pyg4ometry = pyg4ometry.cli:mainNoExceptions
+  dynamic_linking:
+    overlinking_behavior: error
+    overdepending_behavior: error
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - ${{ stdlib('c') }}
+    - cmake >=3.20
+    - make
+    - if: build_platform != target_platform
+      then:
+        - python
+        - cross-python_${{ target_platform }}
+        - numpy
+        - pybind11
+  host:
+    - python
+    - pip
+    - cython
+    - pybind11 >=2.6
+    - numpy
+    - setuptools >=42
+    - setuptools-scm >=3.4
+    - scikit-build-core ==0.5
+    # `cgal` is the SWIG python binding; the headers are in cgal-cpp
+    - cgal-cpp
+    - occt
+    - mpfr
+    - gmp
+    - if: linux
+      then: libgl-devel
+  ignore_run_exports:
+    by_name:
+      # libgl-devel is only needed for OpenCASCADE's Visualization component
+      # to resolve at configure time; nothing here links libGL.
+      - libgl
+  run:
+    - python
+    - importlib-resources
+    - antlr4-python3-runtime ==4.13.1
+    - matplotlib-base
+    - networkx >=3
+    - pandas
+    - scipy
+    - sympy >=1.7
+    - vtk
+
+tests:
+  - python:
+      imports:
+        - pyg4ometry
+        - pyg4ometry.pycgal
+        - pyg4ometry.pycsg
+        - pyg4ometry.pyoce
+      pip_check: true
+
+  - script:
+      - python roundtrip.py
+      - pyg4ometry --help
+    files:
+      recipe:
+        - roundtrip.py
+
+  - package_contents:
+      strict: true
+      bin:
+        - pyg4ometry
+      site_packages:
+        - pyg4ometry
+        - pyg4ometry.pycgal
+        - pyg4ometry.pycsg
+        - pyg4ometry.pyoce
+      files:
+        - if: win
+          then:
+            - Scripts/pyg4ometry*
+            - Lib/site-packages/pyg4ometry/**
+            - Lib/site-packages/pyg4ometry-${{ version }}.dist-info/**
+          else:
+            - bin/pyg4ometry
+            - lib/python*/site-packages/pyg4ometry/**
+            - lib/python*/site-packages/pyg4ometry-${{ version }}.dist-info/**
+        - etc/conda/test-files/pyg4ometry/**
+
+about:
+  license: GPL-3.0-only
+  license_file: LICENSE
+  summary: Python code for rapid creation and conversion of radiation transport Monte Carlo (Geant4 and Fluka) geometries
+  homepage: https://github.com/g4edge/pyg4ometry
+  repository: https://github.com/g4edge/pyg4ometry
+  documentation: https://pyg4ometry.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - chrisburr
+    - stewartboogert
+    - gipert
