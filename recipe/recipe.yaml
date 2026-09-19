@@ -25,6 +25,12 @@ build:
         - set CXXFLAGS=/std:c++17
         - set CMAKE_BUILD_PARALLEL_LEVEL=%CPU_COUNT%
     - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  python:
+    entry_points:
+      # Regenerated here rather than left to pip: pip's Windows launcher bakes
+      # in the build-time prefix, so the console script cannot find python once
+      # the package is installed somewhere else. Target matches pyproject.toml.
+      - pyg4ometry = pyg4ometry.cli:mainNoExceptions
   dynamic_linking:
     # The extensions link only OpenCASCADE, GMP and MPFR, all of which are
     # covered by the run-exports of the host deps, so hold that line.
