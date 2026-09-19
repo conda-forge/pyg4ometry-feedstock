@@ -14,26 +14,19 @@ source:
 build:
   number: 2
   script:
-    # scikit-build-core passes no parallelism flag of its own, so without this
-    # CMake compiles the ~200 translation units one at a time
     - if: unix
       then: export CMAKE_BUILD_PARALLEL_LEVEL=${CPU_COUNT}
     - if: win
       then:
-        # CGAL and OpenCASCADE need C++17 and the CMake build never sets the
-        # standard, so MSVC would fall back to its C++14 default
         - set CXXFLAGS=/std:c++17
         - set CMAKE_BUILD_PARALLEL_LEVEL=%CPU_COUNT%
     - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   python:
     entry_points:
-      # Regenerated here rather than left to pip: pip's Windows launcher bakes
-      # in the build-time prefix, so the console script cannot find python once
-      # the package is installed somewhere else. Target matches pyproject.toml.
+      # Not left to pip: its Windows launcher bakes in the build-time prefix
+      # and breaks on relocation.
       - pyg4ometry = pyg4ometry.cli:mainNoExceptions
   dynamic_linking:
-    # The extensions link only OpenCASCADE, GMP and MPFR, all of which are
-    # covered by the run-exports of the host deps, so hold that line.
     overlinking_behavior: error
     overdepending_behavior: error
 
@@ -59,19 +52,17 @@ requirements:
     - setuptools >=42
     - setuptools-scm >=3.4
     - scikit-build-core ==0.5
-    # the C++ headers; conda-forge's `cgal` is the SWIG python binding, which
-    # pyg4ometry does not use -- it has its own pybind11 bindings in pycgal
+    # `cgal` is the SWIG python binding; the headers are in cgal-cpp
     - cgal-cpp
     - occt
     - mpfr
     - gmp
-    # TKOpenGl, pulled in by the OpenCASCADE Visualization component
     - if: linux
       then: libgl-devel
   ignore_run_exports:
     by_name:
-      # libgl-devel is only needed so that OpenCASCADE's Visualization
-      # component resolves at configure time; nothing here links libGL.
+      # libgl-devel is only needed for OpenCASCADE's Visualization component
+      # to resolve at configure time; nothing here links libGL.
       - libgl
   run:
     - python
@@ -94,9 +85,6 @@ tests:
       pip_check: true
 
   - script:
-      # Round-trips a solid through CGAL (boolean/meshing), the GDML writer and
-      # the ANTLR-generated GDML expression parser, so it exercises the compiled
-      # extensions rather than just importing them.
       - python roundtrip.py
       - pyg4ometry --help
     files:
@@ -113,8 +101,6 @@ tests:
         - pyg4ometry.pycsg
         - pyg4ometry.pyoce
       files:
-        # Directory globs, so new modules are absorbed while strict still
-        # catches anything landing outside site-packages.
         - if: win
           then:
             - Scripts/pyg4ometry*

@@ -33,9 +33,7 @@ info = sub_l.mesh.localmesh.info()
 assert not info["null"] and info["closed"], info
 assert not info["selfintersect"], info
 
-# the mesher approximates the cylinder with a 16-sided prism, so compare
-# against the analytic volume loosely -- a boolean that silently did nothing
-# would still be 39% out
+# loose: the mesher approximates the cylinder with a 16-sided prism
 expected = 100**3 - math.pi * 30**2 * 100
 assert math.isclose(info["volume"], expected, rel_tol=0.03), (info["volume"], expected)
 
