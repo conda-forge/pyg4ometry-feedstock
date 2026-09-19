@@ -1,0 +1,135 @@
+schema_version: 1
+
+context:
+  version: "1.4.6"
+
+package:
+  name: pyg4ometry
+  version: ${{ version }}
+
+source:
+  url: https://files.pythonhosted.org/packages/source/p/pyg4ometry/pyg4ometry-${{ version }}.tar.gz
+  sha256: 37cd80eda2c3bea3b8dacab324d8215ef9098c1c51d8bffd0a2d1a26d077341e
+
+build:
+  number: 2
+  script:
+    # scikit-build-core passes no parallelism flag of its own, so without this
+    # CMake compiles the ~200 translation units one at a time
+    - if: unix
+      then: export CMAKE_BUILD_PARALLEL_LEVEL=${CPU_COUNT}
+    - if: win
+      then:
+        # CGAL and OpenCASCADE need C++17 and the CMake build never sets the
+        # standard, so MSVC would fall back to its C++14 default
+        - set CXXFLAGS=/std:c++17
+        - set CMAKE_BUILD_PARALLEL_LEVEL=%CPU_COUNT%
+    - ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  dynamic_linking:
+    # The extensions link only OpenCASCADE, GMP and MPFR, all of which are
+    # covered by the run-exports of the host deps, so hold that line.
+    overlinking_behavior: error
+    overdepending_behavior: error
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - ${{ stdlib('c') }}
+    - cmake >=3.20
+    - make
+    - if: build_platform != target_platform
+      then:
+        - python
+        - cross-python_${{ target_platform }}
+        - numpy
+        - pybind11
+  host:
+    - python
+    - pip
+    - cython
+    - pybind11 >=2.6
+    - numpy
+    - setuptools >=42
+    - setuptools-scm >=3.4
+    - scikit-build-core ==0.5
+    # the C++ headers; conda-forge's `cgal` is the SWIG python binding, which
+    # pyg4ometry does not use -- it has its own pybind11 bindings in pycgal
+    - cgal-cpp
+    - occt
+    - mpfr
+    - gmp
+    # TKOpenGl, pulled in by the OpenCASCADE Visualization component
+    - if: linux
+      then: libgl-devel
+  ignore_run_exports:
+    by_name:
+      # libgl-devel is only needed so that OpenCASCADE's Visualization
+      # component resolves at configure time; nothing here links libGL.
+      - libgl
+  run:
+    - python
+    - importlib-resources
+    - antlr4-python3-runtime ==4.13.1
+    - matplotlib-base
+    - networkx >=3
+    - pandas
+    - scipy
+    - sympy >=1.7
+    - vtk
+
+tests:
+  - python:
+      imports:
+        - pyg4ometry
+        - pyg4ometry.pycgal
+        - pyg4ometry.pycsg
+        - pyg4ometry.pyoce
+      pip_check: true
+
+  - script:
+      # Round-trips a solid through CGAL (boolean/meshing), the GDML writer and
+      # the ANTLR-generated GDML expression parser, so it exercises the compiled
+      # extensions rather than just importing them.
+      - python roundtrip.py
+      - pyg4ometry --help
+    files:
+      recipe:
+        - roundtrip.py
+
+  - package_contents:
+      strict: true
+      bin:
+        - pyg4ometry
+      site_packages:
+        - pyg4ometry
+        - pyg4ometry.pycgal
+        - pyg4ometry.pycsg
+        - pyg4ometry.pyoce
+      files:
+        # Directory globs, so new modules are absorbed while strict still
+        # catches anything landing outside site-packages.
+        - if: win
+          then:
+            - Scripts/pyg4ometry*
+            - Lib/site-packages/pyg4ometry/**
+            - Lib/site-packages/pyg4ometry-${{ version }}.dist-info/**
+          else:
+            - bin/pyg4ometry
+            - lib/python*/site-packages/pyg4ometry/**
+            - lib/python*/site-packages/pyg4ometry-${{ version }}.dist-info/**
+        - etc/conda/test-files/pyg4ometry/**
+
+about:
+  license: GPL-3.0-only
+  license_file: LICENSE
+  summary: Python code for rapid creation and conversion of radiation transport Monte Carlo (Geant4 and Fluka) geometries
+  homepage: https://github.com/g4edge/pyg4ometry
+  repository: https://github.com/g4edge/pyg4ometry
+  documentation: https://pyg4ometry.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - chrisburr
+    - stewartboogert
+    - gipert
