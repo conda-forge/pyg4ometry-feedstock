@@ -11,7 +11,7 @@ Summary: Python code for rapid creation and conversion of radiation transport Mo
 
 Development: https://github.com/g4edge/pyg4ometry
 
-Documentation: https://pyg4ometry.readthedocs.io
+Documentation: https://pyg4ometry.readthedocs.io/
 
 Current build status
 ====================
